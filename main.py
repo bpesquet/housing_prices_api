@@ -1,8 +1,9 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 
 import pandas as pd
 import joblib
 
+# Load serialized model and data preprocessing pipeline
 model = joblib.load("final_model.pkl")
 pipeline = joblib.load("full_pipeline.pkl")
 
@@ -11,7 +12,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def home():
-    return "Housing Prices API is up and running!"
+    return render_template("index.html")
 
 
 @app.route("/predict", methods=["POST"])

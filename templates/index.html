@@ -1,0 +1,138 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta id="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Housing Prices API</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/open-fonts@1.1.1/fonts/inter.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@exampledev/new.css@1.1.2/new.min.css">
+</head>
+
+<body>
+    <h1>Housing Prices API</h1>
+    <p>Demonstrates how to deploy and access a Machine Learning model.</p>
+    <p>Model was trained with <a href="https://scikit-learn.org/">scikit-learn</a> on an <a
+            href="https://github.com/ageron/handson-ml2">updated version</a> of the <a
+            href="https://www.dcc.fc.up.pt/%7Eltorgo/Regression/cal_housing.html">California Housing dataset</a>.</p>
+    <p>Source code is available on <a href="https://github.com/bpesquet/housing_prices_api">GitHub</a>. See <a href="https://github.com/bpesquet/machine-learning-handbook">Machine Learning Handbook</a> for details
+        about the training process.</p>
+
+    <h2>Testing the model</h2>
+
+    <form>
+        <p><em>The following form lets you define the properties of a housing district. Upon validation, it sends an
+                asynchronous HTTP request to the model, then displays its prediction.</em></p>
+        <p>
+            <label>Longitude:</label>
+            <input type="number" id="longitude" value="-122" required>
+        </p>
+        <p>
+            <label>Latitude:</label>
+            <input type="number" id="latitude" value="38" required>
+        </p>
+        <p>
+            <label>Housing median age:</label>
+            <input type="number" id="housing_median_age" value="49" required>
+        </p>
+        <p>
+            <label>Total rooms:</label>
+            <input type="number" id="total_rooms" value="3700" required>
+        </p>
+        <p>
+            <label>Total bedrooms:</label>
+            <input type="number" id="total_bedrooms" value="575" required>
+        </p>
+        <p>
+            <label>Population:</label>
+            <input type="number" id="population" value="1200" required>
+        </p>
+        <p>
+            <label>Households:</label>
+            <input type="number" id="households" value="543" required>
+        </p>
+        <p>
+            <label>Median income:</label>
+            <input type="number" id="median_income" value="5.2" required>
+        </p>
+        <p>
+            <label>Ocean proximity:</label><br>
+            <label>
+                <input type="radio" name="ocean_proximity" value="<1H OCEAN">
+                Less than 1h from ocean
+            </label>
+            <br>
+            <label>
+                <input type="radio" name="ocean_proximity" value="INLAND">
+                Inland
+            </label>
+            <br>
+            <label>
+                <input type="radio" name="ocean_proximity" value="NEAR OCEAN">
+                Near ocean
+            </label>
+            <br>
+            <label>
+                <input type="radio" name="ocean_proximity" value="NEAR BAY" checked>
+                Near bay
+            </label>
+            <br>
+            <label>
+                <input type="radio" name="ocean_proximity" value="ISLAND">
+                Island
+            </label>
+        </p>
+        <p>
+            <input type="submit" value="Predict price!" />
+        </p>
+
+        <p>
+            <label>Median housing price:</label>
+            <input type="number" id="median_housing_price" readonly>
+        </p>
+    </form>
+
+    <script>
+        // Switch between local and remote (Heroku) deployment
+        const prediction_url = "http://127.0.0.1:5000/predict";
+        // const prediction_url = "https://housing_price_api.herokuapp.com/predict";
+
+        document.querySelector("form").addEventListener("submit", e => {
+            // Cancel default form behavior of sending a synchronous request
+            e.preventDefault();
+            // Convert form data into a JSON object
+            const formData = [{
+                "longitude": document.getElementById("longitude").value,
+                "latitude": document.getElementById("latitude").value,
+                "housing_median_age": document.getElementById("housing_median_age").value,
+                "total_rooms": document.getElementById("total_rooms").value,
+                "total_bedrooms": document.getElementById("total_bedrooms").value,
+                "population": document.getElementById("population").value,
+                "households": document.getElementById("households").value,
+                "median_income": document.getElementById("median_income").value,
+                "ocean_proximity": document.querySelector('input[name="ocean_proximity"]:checked').value
+            }];
+            console.log(formData);
+            // Send form data to the server with an aynchronous POST request
+            fetch(prediction_url, {
+                method: "POST",
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(formData)
+            })
+                .then(response => response.json())
+                .then(prediction => {
+                    console.log(prediction);
+                    const price = parseFloat(prediction.median_housing_price).toFixed(2);
+                    document.getElementById("median_housing_price").value = price;
+                })
+                .catch(err => {
+                    console.error(err.message);
+                });
+        });
+    </script>
+</body>
+
+</html>
