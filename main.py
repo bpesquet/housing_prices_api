@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify, render_template
-
+from flask_cors import CORS
 import pandas as pd
 import joblib
 
@@ -8,6 +8,7 @@ model = joblib.load("final_model.pkl")
 pipeline = joblib.load("full_pipeline.pkl")
 
 app = Flask(__name__)
+cors = CORS(app)
 
 
 @app.route("/")
