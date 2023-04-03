@@ -2,4 +2,4 @@ flask
 flask-cors
 gunicorn
 pandas
-scikit-learn==0.22.1
+scikit-learn
