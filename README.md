@@ -2,7 +2,7 @@
 
 A simple [Flask](https://palletsprojects.com/p/flask/) application demonstrating how to deploy and access a trained Machine Learning model.
 
-See [Machine Learning Handbook](https://github.com/bpesquet/machine-learning-handbook) for details about the training process.
+See [this repository](https://github.com/bpesquet/mlcourse) for details about the training process.
 
 ## Prediction API
 
